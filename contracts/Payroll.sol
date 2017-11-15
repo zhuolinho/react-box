@@ -41,7 +41,7 @@ contract Payroll is Ownable {
         totalSalary = totalSalary.add(employees[employeeId].salary);
     }
     
-    function removeEmloyee(address employeeId) onlyOwner employeeExist(employeeId) {
+    function removeEmployee(address employeeId) onlyOwner employeeExist(employeeId) {
         var employee = employees[employeeId];
         
         _partialPaid(employee);
