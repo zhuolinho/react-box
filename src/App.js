@@ -110,7 +110,7 @@ class App extends Component {
                     </Menu>
                 </Header>
                 <Content style={{padding: '0 50px'}}>
-                    <Layout style={{padding: '24px 0', background: '#fff', minHeight: '500px'}}>
+                    <Layout style={{padding: '24px 0', background: '#fff', minHeight: '600px'}}>
                         {this.renderContent()}
                     </Layout>
                 </Content>

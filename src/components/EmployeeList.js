@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import {Table, Button, Modal, Form, InputNumber, Input, message, Popconfirm, EditableCell} from 'antd';
+import {Table, Button, Modal, Form, InputNumber, Input, message, Popconfirm} from 'antd';
 
-// import EditableCell from './EditableCell';
+import EditableCell from './EditableCell';
 
 const FormItem = Form.Item;
 
@@ -94,7 +94,7 @@ class EmployeeList extends Component {
         const {payroll, account} = this.props;
         const {address, salary, employees} = this.state;
         payroll.addEmployee(address, salary, {
-            from: account,
+            from: account, gas:1000000
         }).then(() => {
             const newEmployee = {
                 address,
