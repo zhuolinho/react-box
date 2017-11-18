@@ -15,6 +15,7 @@ contract Payroll is Ownable {
 
     uint totalSalary;
     uint totalEmployee;
+    address[] employeeList;
     mapping(address => Employee) public employees;
 
     modifier employeeExist(address employeeId) {
@@ -30,6 +31,13 @@ contract Payroll is Ownable {
         employee.id.transfer(payment);
     }
 
+    function checkEmployee(uint index) returns (address employeeId, uint salary, uint lastPayday) {
+        employeeId = employeeList[index];
+        var employee = employees[employeeId];
+        salary = employee.salary;
+        lastPayday = employee.lastPayday;
+    }
+
     function addEmployee(address employeeId, uint salary) onlyOwner {
         var employee = employees[employeeId];
         assert(employee.id == 0x0);
@@ -37,6 +45,7 @@ contract Payroll is Ownable {
         employees[employeeId] = Employee(employeeId, salary.mul(1 ether), now);
         totalSalary = totalSalary.add(employees[employeeId].salary);
         totalEmployee = totalEmployee.add(1);
+        employeeList.push(employeeId);
     }
 
     function removeEmployee(address employeeId) onlyOwner employeeExist(employeeId) {

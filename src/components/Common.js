@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {Card, Col, Row} from 'antd';
 
 class Common extends Component {
     constructor(props) {
@@ -8,7 +9,11 @@ class Common extends Component {
     }
 
     componentDidMount() {
-        const {payroll, web3, account} = this.props;
+        this.checkInfo();
+    }
+
+    checkInfo = () => {
+        const {payroll, account, web3} = this.props;
         payroll.checkInfo.call({
             from: account,
         }).then((result) => {
@@ -25,9 +30,17 @@ class Common extends Component {
         return (
             <div>
                 <h2>通用信息</h2>
-                <p>合约金额：{balance}</p>
-                <p>员工人数：{employeeCount}</p>
-                <p>可支付次数：{runway}</p>
+                <Row gutter={16}>
+                    <Col span={8}>
+                        <Card title="合约金额">{balance} Ether</Card>
+                    </Col>
+                    <Col span={8}>
+                        <Card title="员工人数">{employeeCount}</Card>
+                    </Col>
+                    <Col span={8}>
+                        <Card title="可支付次数">{runway}</Card>
+                    </Col>
+                </Row>
             </div>
         );
     }
