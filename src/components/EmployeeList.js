@@ -48,6 +48,31 @@ class EmployeeList extends Component {
     }
 
     componentDidMount() {
+        const {payroll, web3} = this.props;
+        const updateInfo = (error, result) => {
+            if (!error) {
+                this.checkInfo();
+            }
+        }
+
+        this.newFund = payroll.NewFund(updateInfo);
+        this.getPay = payroll.GetPaid(updateInfo);
+        this.newEmployee = payroll.NewEmployee(updateInfo);
+        this.updateemployee = payroll.UpdateEmployee(updateInfo);
+        this.removeemployee = payroll.RemoveEmployee(updateInfo);
+
+        this.checkInfo();
+    }
+
+    componentWillUnmount() {
+        this.newFund.stopWatching();
+        this.getPay.stopWatching();
+        this.newEmployee.stopWatching();
+        this.updateemployee.stopWatching();
+        this.removeemployee.stopWatching();
+    }
+
+    checkInfo() {
         const {payroll, account, web3} = this.props;
         payroll.checkInfo.call({
             from: account
@@ -55,13 +80,12 @@ class EmployeeList extends Component {
             const employeeCount = result[2].toNumber();
 
             if (employeeCount === 0) {
-                this.setState({loading: false});
+                this.setState({loading: false, employees: []});
                 return;
             }
 
             this.loadEmployees(employeeCount);
         });
-
     }
 
     loadEmployees(employeeCount) {
@@ -96,18 +120,9 @@ class EmployeeList extends Component {
         payroll.addEmployee(address, salary, {
             from: account, gas: 1000000
         }).then(() => {
-            const newEmployee = {
-                address,
-                salary,
-                key: address,
-                lastPaidDay: new Date().toString()
-            }
-
             this.setState({
-                address: '',
-                salary: '',
                 showModal: false,
-                employees: employees.concat([newEmployee])
+                loading: true
             });
         });
     }
@@ -116,16 +131,10 @@ class EmployeeList extends Component {
         const {payroll, account} = this.props;
         const {employees} = this.state;
         payroll.updateEmployee(address, salary, {
-            from: account,
+            from: account, gas: 1000000
         }).then(() => {
             this.setState({
-                employees: employees.map((employee) => {
-                    if (employee.address === address) {
-                        employee.salary = salary;
-                    }
-
-                    return employee;
-                })
+                loading: true
             });
         }).catch(() => {
             message.error('你没有足够的金额');
@@ -136,10 +145,10 @@ class EmployeeList extends Component {
         const {payroll, account} = this.props;
         const {employees} = this.state;
         payroll.removeEmployee(employeeId, {
-            from: account,
+            from: account, gas: 1000000
         }).then((result) => {
             this.setState({
-                employees: employees.filter(employee => employee.address !== employeeId)
+                loading: true
             });
         }).catch(() => {
             message.error('你没有足够的金额');
